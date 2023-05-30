@@ -13,10 +13,6 @@
 .gradle/
 .idea/
 
-build/
-src/main/resources/assets/
-*.json
-
 # Package Files #
 *.jar
 *.war
