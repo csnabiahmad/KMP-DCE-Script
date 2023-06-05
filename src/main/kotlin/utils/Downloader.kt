@@ -16,11 +16,13 @@
 
 package utils
 
+import com.kadirkuruca.newsapp.extensions.fileName
 import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import java.io.File
+import java.net.URLDecoder
 
 /** @author Nabi Ahmad
  * [github.com/csnabiahmad]
@@ -28,14 +30,17 @@ import java.io.File
  */
 
 class Downloader {
-    suspend fun downloadVideo(client: HttpClient, url: String) {
-        val fileName = url.substringAfterLast("/").replace("+"," ")
+    suspend fun downloadVideo(client: HttpClient, url: String): String? {
+        val fileName = URLDecoder.decode(url.fileName())
         val file = File(downloadDirectory, fileName)
+        if (file.exists()) {
+            println("File already Downloaded => Moving to Compression...")
+            return fileName
+        }
         runCatching {
             val directory = File(downloadDirectory)
             if (!directory.exists()) {
-                // Create the directory.
-                directory.mkdirs()
+                directory.mkdirs() // Create the directory.
                 println("Directory created: $downloadDirectory")
             }
             println("Download started: ${getCurrentDate()}")
@@ -44,15 +49,12 @@ class Downloader {
             file.writeBytes(content)
             println("File $fileName saved to directory: $downloadDirectory")
             println("Download ended: ${getCurrentDate()}")
-            Coroutines.executeCoroutineIO {
-                Compressor().compressVideo(
-                    fileName
-                )
-            }
         }.onFailure {
             println("Failed to download: $fileName")
             println("Failed at: ${getCurrentDate()}")
             client.close()
+            return null
         }
+        return fileName
     }
 }

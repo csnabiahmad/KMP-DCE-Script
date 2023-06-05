@@ -1,5 +1,6 @@
 package utils
 
+import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.nio.charset.StandardCharsets
@@ -11,6 +12,11 @@ import javax.crypto.spec.SecretKeySpec
 
 class Encryptor {
     fun encrypt(fileName: String) {
+        val file = File(encryptedDirectory, fileName.replace(".mp4", ".enc"))
+        if (file.exists()) {
+            println("File already Encrypted!")
+            return
+        }
         println("Encryption started at: ${getCurrentDate()} of $fileName")
         // Here you read the cleartext
         val fis = FileInputStream(compressDirectory.plus(fileName))

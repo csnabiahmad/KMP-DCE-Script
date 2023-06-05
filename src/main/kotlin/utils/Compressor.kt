@@ -19,6 +19,7 @@ package utils
 import io.github.techgnious.IVCompressor
 import io.github.techgnious.dto.ResizeResolution
 import io.github.techgnious.dto.VideoFormats
+import java.io.File
 
 /** @author Nabi Ahmad
  * [github.com/csnabiahmad]
@@ -28,23 +29,25 @@ import io.github.techgnious.dto.VideoFormats
 class Compressor {
     private var compressor = IVCompressor()
     private var fileIO = FileIO()
-    fun compressVideo(fileName: String) {
+    fun compressVideo(fileName: String) : String? {
+        val file = File(compressDirectory.plus(fileName))
+        if (file.exists()){
+            println("File already Compressed => Moving to Encryption...")
+            return fileName
+        }
         fileIO.fetchFileBytes(downloadDirectory.plus(fileName))?.let { bytesArray ->
             runCatching {
                 println("Compression starts at: ${getCurrentDate()} of ${compressDirectory}")
                 val compress = compressor.reduceVideoSize(bytesArray, VideoFormats.MP4, ResizeResolution.R480P)
                 fileIO.byteArrayToMP4(compress, fileName)
                 println("Compression ended at: ${getCurrentDate()} of ${fileName}")
-                Coroutines.executeCoroutineIO {
-                    Encryptor().encrypt(
-                        fileName
-                    )
-                }
             }.onFailure {
-                println("${it.message}")
+                return null
             }
-        } ?: {
+        } ?: run {
             println("Path not found for file: $fileName")
+            return null
         }
+        return fileName
     }
 }

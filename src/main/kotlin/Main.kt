@@ -1,10 +1,9 @@
-
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import remote.KtorClient
-import utils.Coroutines
-import utils.Downloader
-import utils.FileIO
-import utils.JsonDecoder
+import utils.*
 
 /** @author Nabi Ahmad
  * [github.com/csnabiahmad]
@@ -14,20 +13,24 @@ import utils.JsonDecoder
 
 fun main() = runBlocking<Unit> {
     println(" *** Video Download, Compression & Encryption Script *** ")
+    val urls = JsonDecoder().readJsonFromAssets()
+    val client = KtorClient.getClient()
     FileIO().createBundleDirectories()
-    val teacherTrainingVideoModel = JsonDecoder().readJsonFromAssets()
-    teacherTrainingVideoModel.onEach { item->
-        Coroutines.executeCoroutineIO {
-            println("=== Teacher Training : ${item.videoLink} ===")
-            runCatching {
-                Downloader().downloadVideo(
-                    client = KtorClient.getClient(),
-                    url = item.videoLink,
-                )
-            }.onFailure {
-                println("=== Teacher Training Failed: ${item.videoLink} ===")
-            }.onSuccess {
-                println("=== Teacher Training Success: ${item.videoLink} ===")
+
+    coroutineScope {
+        urls.forEach { url ->
+            launch(IO) {
+                runCatching {
+                    val file = Downloader().downloadVideo(client, url.videoLink)
+                    file?.let {
+                        val compressedFile = Compressor().compressVideo(file)
+                        compressedFile?.let {
+                            Encryptor().encrypt(compressedFile)
+                        }
+                    }
+                }.onFailure {
+                    println(it.message)
+                }
             }
         }
     }
