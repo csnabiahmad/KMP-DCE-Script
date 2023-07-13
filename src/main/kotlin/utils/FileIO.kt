@@ -32,7 +32,12 @@ class FileIO {
         val downloadDir = File(downloadDirectory)
         val compressDir = File(compressDirectory)
         val encryptDir = File(encryptedDirectory)
+        val lpsdDir = File(lpsDirectory)
+        val csv = File(csvz)
         runCatching {
+            if (!lpsdDir.exists()){
+                lpsdDir.mkdirs()
+            }
             if (!downloadDir.exists()){
                 downloadDir.mkdirs()
             }
@@ -41,6 +46,9 @@ class FileIO {
             }
             if (!encryptDir.exists()){
             encryptDir.mkdirs()
+            }
+            if (!csv.exists()){
+                csv.mkdirs()
             }
         }.onFailure {
             println(it.message)

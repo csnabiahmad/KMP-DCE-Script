@@ -20,8 +20,16 @@ import java.io.File
 
 private val desktopDir = System.getProperty("user.home") + File.separator + "Desktop"
 private val appBundleDirectory = desktopDir + File.separator + "Taleemabad"
-val downloadDirectory = appBundleDirectory + File.separator + "TrainingVideos" + File.separator
-val compressDirectory = appBundleDirectory + File.separator + "Compressed" + File.separator
-val encryptedDirectory = appBundleDirectory + File.separator + "Encrypted" + File.separator
+val lpsDirectory = appBundleDirectory + File.separator + "LPs"
+val trainingDirectory = appBundleDirectory + File.separator + "Trainings"
+
+
+//val downloadDirectory = lpsDirectory + File.separator + "Videos" + File.separator // for Videos
+val downloadDirectory = lpsDirectory + File.separator + "Images" + File.separator  // for Images
+val compressDirectory = lpsDirectory + File.separator + "Compressed" + File.separator
+val encryptedDirectory = lpsDirectory + File.separator + "Encrypted" + File.separator
+val csvz = lpsDirectory + File.separator + "CSV" + File.separator
 const val trainingData = "src/main/resources/assets/training_data.json"
+const val lpData = "src/main/resources/assets/lp_lps.json"
+const val lpImages = "src/main/resources/assets/lp_lps_images.json"
 const val DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"

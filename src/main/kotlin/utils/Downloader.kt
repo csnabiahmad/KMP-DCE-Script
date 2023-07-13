@@ -21,6 +21,7 @@ import io.ktor.client.*
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
+import kotlinx.coroutines.delay
 import java.io.File
 import java.net.URLDecoder
 
@@ -52,9 +53,11 @@ class Downloader {
         }.onFailure {
             println("Failed to download: $fileName")
             println("Failed at: ${getCurrentDate()}")
+            println("Cause: ${it.message}")
             client.close()
             return null
         }
+        delay(3000)
         return fileName
     }
 }

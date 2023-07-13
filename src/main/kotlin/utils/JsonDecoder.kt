@@ -17,7 +17,6 @@
 package utils
 
 import com.google.gson.Gson
-import model.TeacherTrainingVideoModel
 import java.io.File
 
 /** @author Nabi Ahmad
@@ -26,9 +25,10 @@ import java.io.File
  */
 
 class JsonDecoder {
-    fun readJsonFromAssets(): TeacherTrainingVideoModel {
-        val assetFile = File("$trainingData")
-        val text =  assetFile.readText()
-        return Gson().fromJson(text,TeacherTrainingVideoModel::class.java)
+    fun <T> readJsonFromAssets(fileName: String = trainingData, clazz: Class<T>): T {
+        val assetFile = File(fileName)
+        val jsonString = assetFile.readText()
+        return Gson().fromJson(jsonString, clazz)
     }
+
 }

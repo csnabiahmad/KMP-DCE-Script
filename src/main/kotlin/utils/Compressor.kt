@@ -19,6 +19,7 @@ package utils
 import io.github.techgnious.IVCompressor
 import io.github.techgnious.dto.ResizeResolution
 import io.github.techgnious.dto.VideoFormats
+import kotlinx.coroutines.delay
 import java.io.File
 
 /** @author Nabi Ahmad
@@ -29,7 +30,7 @@ import java.io.File
 class Compressor {
     private var compressor = IVCompressor()
     private var fileIO = FileIO()
-    fun compressVideo(fileName: String) : String? {
+    suspend fun compressVideo(fileName: String) : String? {
         val file = File(compressDirectory.plus(fileName))
         if (file.exists()){
             println("File already Compressed => Moving to Encryption...")
@@ -42,12 +43,15 @@ class Compressor {
                 fileIO.byteArrayToMP4(compress, fileName)
                 println("Compression ended at: ${getCurrentDate()} of ${fileName}")
             }.onFailure {
+                println("Failed to compress: $fileName")
+                println("Cause: ${it.message}")
                 return null
             }
         } ?: run {
             println("Path not found for file: $fileName")
             return null
         }
+        delay(2000)
         return fileName
     }
 }

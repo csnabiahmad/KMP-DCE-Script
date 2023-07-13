@@ -29,5 +29,6 @@ dependencies {
     implementation("io.ktor:ktor-client-okhttp:$ktor_version")
     implementation("io.ktor:ktor-serialization-gson:$ktor_version")
     implementation("io.github.techgnious:IVCompressor:2.0.0")
+    implementation ("org.jetbrains.kotlinx:kotlinx-serialization-json:1.2.2")
 
 }
