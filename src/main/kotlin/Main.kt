@@ -47,7 +47,7 @@ fun downloadImages() {
 }
 
 fun downloadAudios() {
-    println("Total: ${urlsImages.size}")
+    println("Total: ${urlsAudio.size}")
     Coroutines.executeCoroutineIO {
         urlsAudio.forEachIndexed { index, item ->
             println("Index: " + index)
