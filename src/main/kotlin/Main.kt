@@ -1,6 +1,7 @@
 import com.google.gson.Gson
 import io.ktor.client.*
 import kotlinx.coroutines.runBlocking
+import model.LPsAudioModel
 import model.LPsImageModel
 import model.LPsVideoModel
 import remote.KtorClient
@@ -12,24 +13,27 @@ import utils.*
  */
 
 
-lateinit var urls: LPsVideoModel
+lateinit var urlsVideos: LPsVideoModel
 lateinit var urlsImages: LPsImageModel
+lateinit var urlsAudio: LPsAudioModel
 lateinit var client: HttpClient
 lateinit var videoLinks: List<LPsVideoModel.LPsVideoModelItem>
 
 fun main() = runBlocking<Unit> {
     init()
-    downloadImages() // for images
+//    downloadImages() // for images
+    downloadAudios() // for audios
 //    downloadVideos() // for videos
 }
 
 fun init() {
     println(" *** Video Download, Compression & Encryption Script *** ")
-    urls = JsonDecoder().readJsonFromAssets(fileName = lpData, LPsVideoModel::class.java)
+    urlsVideos = JsonDecoder().readJsonFromAssets(fileName = lpData, LPsVideoModel::class.java)
     urlsImages = JsonDecoder().readJsonFromAssets(fileName = lpImages, LPsImageModel::class.java)
+    urlsAudio = JsonDecoder().readJsonFromAssets(fileName = lpAudios, LPsAudioModel::class.java)
     client = KtorClient.getClient()
     FileIO().createBundleDirectories()
-    videoLinks = urls.filter { it.videoLink.isNotEmpty() }
+    videoLinks = urlsVideos.filter { it.videoLink.isNotEmpty() }
 }
 
 fun downloadImages() {
@@ -37,11 +41,20 @@ fun downloadImages() {
     Coroutines.executeCoroutineIO {
         urlsImages.forEachIndexed { index, item ->
             println("Index: " + index)
-            Downloader().downloadVideo(client, item.link!!)
+            Downloader().startDownload(client, item.link!!)
         }
     }
 }
 
+fun downloadAudios() {
+    println("Total: ${urlsImages.size}")
+    Coroutines.executeCoroutineIO {
+        urlsAudio.forEachIndexed { index, item ->
+            println("Index: " + index)
+            Downloader().startDownload(client, item.link!!)
+        }
+    }
+}
 fun downloadVideos() {
     println("Total: ${videoLinks.size}")
     Coroutines.executeCoroutineIO {
@@ -50,9 +63,9 @@ fun downloadVideos() {
             println("Item: " + Gson().toJson(item))
             item.videoLink.forEach {
                 runCatching {
-                    val downloaded = Downloader().downloadVideo(client, it)
+                    val downloaded = Downloader().startDownload(client, it)
                     downloaded?.let {
-                        val compressedFile = Compressor().compressVideo(downloaded)
+                        val compressedFile = Compressor().startCompression(downloaded)
                         compressedFile?.let {
                             Encryptor().encrypt(compressedFile)
                         }

@@ -31,7 +31,7 @@ import java.net.URLDecoder
  */
 
 class Downloader {
-    suspend fun downloadVideo(client: HttpClient, url: String): String? {
+    suspend fun startDownload(client: HttpClient, url: String): String? {
         val fileName = URLDecoder.decode(url.fileName())
         val file = File(downloadDirectory, fileName)
         if (file.exists()) {

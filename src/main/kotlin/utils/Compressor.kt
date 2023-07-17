@@ -30,7 +30,7 @@ import java.io.File
 class Compressor {
     private var compressor = IVCompressor()
     private var fileIO = FileIO()
-    suspend fun compressVideo(fileName: String) : String? {
+    suspend fun startCompression(fileName: String) : String? {
         val file = File(compressDirectory.plus(fileName))
         if (file.exists()){
             println("File already Compressed => Moving to Encryption...")

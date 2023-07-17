@@ -32,4 +32,5 @@ val csvz = lpsDirectory + File.separator + "CSV" + File.separator
 const val trainingData = "src/main/resources/assets/training_data.json"
 const val lpData = "src/main/resources/assets/lp_lps.json"
 const val lpImages = "src/main/resources/assets/lp_lps_images.json"
+const val lpAudios = "src/main/resources/assets/lp_lps_audios.json"
 const val DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
