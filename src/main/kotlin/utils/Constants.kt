@@ -26,7 +26,7 @@ val trainingDirectory = appBundleDirectory + File.separator + "Trainings"
 
 //val downloadDirectory = lpsDirectory + File.separator + "Videos" + File.separator // for Videos
 //val downloadDirectory = lpsDirectory + File.separator + "Images" + File.separator  // for Images
-val downloadDirectory = lpsDirectory + File.separator + "Audios" + File.separator  // for Images
+val downloadDirectory = lpsDirectory + File.separator + "Audios" + File.separator  // for Audios
 val compressDirectory = lpsDirectory + File.separator + "Compressed" + File.separator
 val encryptedDirectory = lpsDirectory + File.separator + "Encrypted" + File.separator
 val csvz = lpsDirectory + File.separator + "CSV" + File.separator
