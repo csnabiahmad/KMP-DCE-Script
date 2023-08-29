@@ -6,6 +6,7 @@ import model.LPsImageModel
 import model.LPsVideoModel
 import remote.KtorClient
 import utils.*
+import java.io.File
 
 /** @author Nabi Ahmad
  * [github.com/csnabiahmad]
@@ -13,29 +14,36 @@ import utils.*
  */
 
 
-lateinit var urlsVideos: LPsVideoModel
-lateinit var urlsImages: LPsImageModel
-lateinit var urlsAudio: LPsAudioModel
+private var urlsVideos: LPsVideoModel = LPsVideoModel()
+private var urlsImages: LPsImageModel = LPsImageModel()
+private var urlsAudio: LPsAudioModel = LPsAudioModel()
 lateinit var client: HttpClient
 lateinit var videoLinks: List<LPsVideoModel.LPsVideoModelItem>
 
 fun main() = runBlocking<Unit> {
-    init()
+//    init()
+    generateSLO() // creating CSV from SLO.json
 //    downloadImages() // for images
-    downloadAudios() // for audios
+//    downloadAudios() // for audios
 //    downloadVideos() // for videos
 }
 
 fun init() {
+    val assetFile = File(lpImagesStage)
+    val jsonString = assetFile.readText()
+
+
     println(" *** Video Download, Compression & Encryption Script *** ")
-    urlsVideos = JsonDecoder().readJsonFromAssets(fileName = lpData, LPsVideoModel::class.java)
-    urlsImages = JsonDecoder().readJsonFromAssets(fileName = lpImages, LPsImageModel::class.java)
-    urlsAudio = JsonDecoder().readJsonFromAssets(fileName = lpAudios, LPsAudioModel::class.java)
+//    urlsVideos = JsonDecoder().readJsonFromAssets(fileName = lpData, LPsVideoModel::class.java)
+//    urlsImages = JsonDecoder().readJsonFromAssets(fileName = lpImagesStage, LPsImageModel::class.java)
+    urlsAudio = JsonDecoder().readJsonFromAssets(fileName = lpAudiosStage, LPsAudioModel::class.java)
     client = KtorClient.getClient()
     FileIO().createBundleDirectories()
     videoLinks = urlsVideos.filter { it.videoLink.isNotEmpty() }
 }
-
+fun generateSLO(){
+    SloGenerator().generateSLOFile()
+}
 fun downloadImages() {
     println("Total: ${urlsImages.size}")
     Coroutines.executeCoroutineIO {
@@ -45,7 +53,6 @@ fun downloadImages() {
         }
     }
 }
-
 fun downloadAudios() {
     println("Total: ${urlsAudio.size}")
     Coroutines.executeCoroutineIO {
