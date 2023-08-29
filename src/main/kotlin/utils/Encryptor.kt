@@ -11,10 +11,10 @@ import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
 
-class Encryptor {
-    suspend fun encrypt(fileName: String) {
+object Encryptor {
+    suspend fun encrypt(fileName: String, fromType: String, toType: String) {
         runCatching {
-            val file = File(encryptedDirectory, fileName.replace(".mp4", ".enc"))
+            val file = File(encryptedDirectory, fileName.replace(fromType, toType))
             if (file.exists()) {
                 println("File already Encrypted!")
                 return
@@ -23,7 +23,7 @@ class Encryptor {
             // Here you read the cleartext
             val fis = FileInputStream(compressDirectory.plus(fileName))
             // This stream write the encrypted text. This stream will be wrapped by another stream
-            val fos = FileOutputStream(encryptedDirectory.plus(fileName.replace(".mp4", ".enc")))
+            val fos = FileOutputStream(encryptedDirectory.plus(fileName.replace(fromType, toType)))
             val initializationVector = "1234567890123456"
             val ivBytes: ByteArray = initializationVector.toByteArray(StandardCharsets.UTF_8)
             val ivSpec = IvParameterSpec(ivBytes)
@@ -35,7 +35,7 @@ class Encryptor {
             // Wrap the output stream
             val cos = CipherOutputStream(fos, cipher)
             // Create Enc file
-            FileIO().byteArrayToEnc(fis,cos,fileName)
+            FileIO().byteArrayToEnc(fis, cos, fileName)
             delay(2000)
         }.onFailure {
             println("Failed to encrypt: $fileName")

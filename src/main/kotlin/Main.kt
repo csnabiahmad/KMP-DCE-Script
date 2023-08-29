@@ -21,8 +21,10 @@ lateinit var client: HttpClient
 lateinit var videoLinks: List<LPsVideoModel.LPsVideoModelItem>
 
 fun main() = runBlocking<Unit> {
+    Encryptor.encrypt("test.db",".db",".enc")
+
 //    init()
-    generateSLO() // creating CSV from SLO.json
+//    generateSLO() // creating CSV from SLO.json
 //    downloadImages() // for images
 //    downloadAudios() // for audios
 //    downloadVideos() // for videos
@@ -49,7 +51,7 @@ fun downloadImages() {
     Coroutines.executeCoroutineIO {
         urlsImages.forEachIndexed { index, item ->
             println("Index: " + index)
-            Downloader().startDownload(client, item.link!!)
+            Downloader.startDownload(client, item.link!!)
         }
     }
 }
@@ -58,7 +60,7 @@ fun downloadAudios() {
     Coroutines.executeCoroutineIO {
         urlsAudio.forEachIndexed { index, item ->
             println("Index: " + index)
-            Downloader().startDownload(client, item.link!!)
+            Downloader.startDownload(client, item.link!!)
         }
     }
 }
@@ -70,11 +72,11 @@ fun downloadVideos() {
             println("Item: " + Gson().toJson(item))
             item.videoLink.forEach {
                 runCatching {
-                    val downloaded = Downloader().startDownload(client, it)
+                    val downloaded = Downloader.startDownload(client, it)
                     downloaded?.let {
-                        val compressedFile = Compressor().startCompression(downloaded)
+                        val compressedFile = Compressor.startCompression(downloaded)
                         compressedFile?.let {
-                            Encryptor().encrypt(compressedFile)
+                            Encryptor.encrypt(compressedFile,".mp4",".enc")
                         }
                         println("File: $compressedFile")
                     }

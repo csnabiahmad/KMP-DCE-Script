@@ -30,7 +30,7 @@ import java.net.URLDecoder
  * Mon, 29 May, 2023
  */
 
-class Downloader {
+object Downloader {
     suspend fun startDownload(client: HttpClient, url: String): String? {
         val fileName = URLDecoder.decode(url.fileName())
         val file = File(downloadDirectory, fileName)

@@ -27,7 +27,7 @@ import java.io.File
  * Mon, 29 May, 2023
  */
 
-class Compressor {
+object Compressor {
     private var compressor = IVCompressor()
     private var fileIO = FileIO()
     suspend fun startCompression(fileName: String) : String? {
